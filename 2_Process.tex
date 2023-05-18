@@ -1,1 +1,39 @@
 \section{Survey Process}
+\label{sec:process}
+
+This survey focuses on dynamic binary translation and optimization. 
+Before article collection stage, we designed several keywords such as "dynamic binary translation" and its abbreviation "DBT".
+We also picked some strongly related keywords, such as "binary translation", "dynamic binary instrumentation", and "dynamic binary rewriting".
+Based on these keywords, we conducted a comprehensive article collection on the top conferences and journals through AMiner, dblp, Google Scholar, and CNKI.
+
+Table~\ref{tab:papers} shows the number of collected articles for each keyword when using the corresponding search tool.
+In AMiner, we set the search options to conferences and journals in CCF A rank and CCF B rank.
+These papers are most likely to be influential and are the articles of our follow-up focus.
+In DBLP and CNKI, searching by keyword "DBT" will get a large number of irrelevant articles, so we ignore these results (marked as "/" in the table).
+In Google Scholar, searching by keyword "DBT" gets 2780 results, which are difficult to check manually, so we discarded these results.
+
+\begin{table}[!ht]
+	\centering
+	\caption{The number of collected papers under the given search tool and keyword before filtering.}
+	\label{tab:papers}
+	\scalebox{0.95}{
+    \begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		\textbf{Search tool} & \makecell{dynamic \\ binary \\ translation} & \makecell{DBT} & \makecell{binary translation} & \makecell{dynamic binary \\ instrumentation} & \makecell{dynamic binary \\ rewriting} \\ \hline
+		AMiner          & 74    & 16                        & 113   & 8     & 6     \\ \hline
+		DBLP            & 120   & /                         & 204   & 40    & 8     \\ \hline
+		Google Scholar  & 261   & \textcolor{gray}{2780}    & 561   & 135   & 13    \\ \hline
+		CNKI            & 98    & /                         & 187   & 5     & 2     \\ \hline
+	\end{tabular}}
+\end{table}
+
+Then, we skimmed through the titles of these searched articles, filtering out articles that were apparently not relevant to DBT.
+We also use some methods, such as sorting according to the number of citations, to collecte more influential articles.
+
+Next, we snowballed through review articles retrieved in the previous stage.
+We also selected some of the most cited papers to view related work.
+Finally, we picked the most relevant and influential \textbf{114} articles on dynamic binary translation and optimizations.
+
+In order to organize the collected articles, we build a mind map and classify these articles.
+They are divided into four categories, including: 7 review articles, 63 optimization articles, 24 application articles, and 20 realted topic articles. 
+Articles related to optimization are our focus and are further subdivided into five categories according to optimization methods, including: 7 memory optimization, 12 parallel optimization, 16 code layout optimization, 28 instruction level optimization, and 9 hardware-assisted optimization. 

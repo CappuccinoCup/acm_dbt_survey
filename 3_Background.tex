@@ -1,1 +1,45 @@
 \section{Background}
+\label{sec:background}
+
+Binary translation translates binary programs from one ISA to another without relying on source code. 
+Binary translation can be divided into static binary translation (SBT), dynamic binary translation (DBT) and binary translation combining static and dynamic. 
+These three translation methods will be introduced separately below.
+
+\subsection{Static Binary Translation}
+The process of static binary translation is basically similar to compilation, the difference is that the input file of static binary translation changes from source code to binary program: 
+the input binary program is first parsed through the disassembly process, and then the control flow graph is generated through analysis, and then further analyzed to generate The intermediate representation is then optimized on the intermediate representation, and finally the binary instructions that can be executed on the host machine are generated through the code generation process.
+Since the translation process is performed offline, its execution efficiency is relatively high, and translation can be performed multiple times at a time.
+Static binary translation can be regarded as a compiler that uses binary programs as input, so some people propose that the compiler can be directly transformed into a static binary translation tool [11]: 
+just convert binary instructions into intermediate representations, from intermediate representations to The process of the host computer instruction can be completed directly by using the compiler. 
+However, whether it is a compiler or a static binary translator, it is usually optimized on the intermediate representation, so some host information will be lost and optimization opportunities will be missed. 
+Therefore, the research of Tan Jie et al. [12] focuses on the optimization of the host. 
+In terms of code, combined with liveness analysis and peephole optimization theory, a large number of redundant instructions have been successfully eliminated, and the execution efficiency has been improved by a maximum of 42\%.
+
+However, static binary translation cannot well solve the problems faced in indirect jumps, self-modifying code, and dynamic linking.
+
+Indirect jumps are jump instructions that store the jump target in a register instead of an instruction, and these jump targets often have to wait until runtime to determine the specific value.
+Determining the indirect jump targets and their mapping on the host ISA is known as code discovery and code localization problems, respectively. 
+For code discovery and code localization, researchers have proposed some feasible solutions. 
+One solution for code discovery is to establish an address mapping table, store possible jump targets in the table, and insert a mark when translating indirect jump instructions, and when the mark is encountered during execution, it will go to the address mapping table to query the jump Forward address.
+Bansal et al. [13] use the method of the above address mapping table to determine the indirect jump target.
+Chen Long et al. [14] proposed a semantic map-based method to identify those indirect jump instructions and confirm their jump targets.
+After confirming the jump target, the customer target address must be converted to the host target address, that is, code positioning.
+Wang Jun et al. [15] proposed a solution to establish a secondary mapping table to save the mapping relationship between the client's target address and the host's target address to determine the mapped target address.
+
+However, no effective static solution has been found so far for the problems posed by self-modifying code and dynamic linking.
+Due to the mixed characteristics of data and instructions in the von Neumann architecture, for a memory access instruction, it is difficult for static binary translation to distinguish whether the content accessed by the memory access instruction is an instruction or ordinary data during the offline translation process.
+Therefore, self-modifying code is hardly recognized by static binary translation, and it is even more difficult to process self-modifying code offline.
+However, due to the low proportion of self-modifying codes in common applications, current static binary translation tools tend to avoid them.
+Secondly, static binary translation is also difficult to deal with the problems caused by dynamic link libraries.
+When a dynamic link library version upgrade occurs at runtime, static binary translation can hardly recognize the occurrence of this situation, unless all dynamic link libraries have prepared translated versions in advance, which is related to the dynamic link library Contrary to the design concept.
+
+\subsection{Dynamic Binary Translation}
+Dynamic binary translation puts the translation process at runtime and executes it while translating. 
+Although this inevitably brings a lot of translation and optimization overhead at runtime, because of the runtime information, dynamic binary translation can easily solve code discovery and code location problems. 
+As for the problem of self-modifying code, there are two mature solutions for dynamic binary translation [7]: special instructions provided by ISA to notify the processor that self-modifying has occurred; or using page protection mechanism to identify and process self-modifying code. 
+QEMU~\cite{DBLP:conf/usenix/Bellard05}, which is well known in the industry, uses a page protection mechanism to solve the problem of self-modifying code.
+
+A typical dynamic binary translation tool is mainly composed of translation engine, execution engine and code cache. 
+The dynamic binary translation tool takes the binary program file of the client computer ISA as input, and performs translation in units of basic blocks according to certain rules. 
+When the basic block is executed for the first time, the translation engine first translates it through four steps of parsing, analysis, optimization, and code generation, and then stores the translated code segment in the code cache and sends it to the execution engine for execution. 
+When the basic block is subsequently executed again, the execution engine will take the code segment out of the code cache and send it directly for execution.

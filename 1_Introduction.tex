@@ -1,1 +1,32 @@
 \section{Introduction}
+
+In the earlier years, the hardware was more diverse, and many different Instruction Set Architectures (ISA) emerged.
+With the updating and upgrading of hardwares and ISAs, binary compatibility and migration issues have become problems faced by many binary programs that lack source codes.
+Binary translation can deal with the problem by converting binary codes of a guest ISA directly to binary codes of a host ISA without source codes.
+Moreover, since binary translation can make full use of the hardware features of the guest and the host machine, and conduct in-depth analysis on binary programs, it has been widely used in code optimization, binary analysis, binary security, virtualization, simulation, and many other fields. 
+
+Binary translation can be divided into Static Binary Translation (SBT) and Dynamic Binary Translation (DBT).
+SBT aims to translate all of the binary codes of an executable file into binary codes that can runs in the current host machine without having to running the codes first.
+DBT translates and executes binary codes on-the-fly, thus can collect program run-time information and has more powerful translation capabilities.
+Since DBT can cover more scenarios, it has received more attention and research, and is also the focus of this survey.
+
+Most of the influential surveys we could find so far were written before 2010.
+To the best of our knowledge, ~\cite{DBLP:conf/icsm/CifuentesM96} was the first to review the binary translation and discuss the differences between SBT and DBT.
+Around 2000, Altman et al.~\cite{DBLP:journals/pieee/AltmanEGS01}\cite{DBLP:journals/computer/AltmanKS00} presented the challenges and opportunities faced by binary translation at the time.
+In 2002, Probst ~\cite{probst2002dynamic} presented an overview of DBT.
+In 2005, Duesterwald~\cite{DBLP:journals/pieee/Duesterwald05} introduced the design and implementation details of DBT, which is a fundamental part of DBT.
+In 2007, Li Jianhui et al. ~\cite{Li2007} analyzed and summarized the research details of DBT.
+In 2019, Wenzl et al. ~\cite{DBLP:journals/csur/WenzlMUW19} briefly introduced the related research on DBT.
+In the past two decades, researchers have continuously proposed new DBT methods, or applied DBT to simulation, security analysis and other fields.
+This article aims to categorize the optimization methods in the field of DBT, and sort out the practical applications of DBT technology.
+
+The Rest of this paper is organized as follows.
+In Section~\ref{sec:process}, we present the survey process of this research.
+In Section~\ref{sec:background}, we introduces the basic principles and theoretical innovations of binary translation, especially DBT and the advantages of DBT over SBT.
+In Section~\ref{sec:optimizations}, we focus on the optimization of DBT, and classify and elaborate various optimization methods.
+In Section~\ref{sec:applications}, we introduce the applications of DBT.
+Section~\ref{sec:comments} is the characteristic of the survey.
+In Section~\ref{sec:comments}, we discuss the unresolved issues and possible problems in the development of DBT.
+To address these challenges, we propose some possible solutions.
+Then, we comprehensively considered the relationship between DBT and SBT, the historical development of DBT and the research hotspots of DBT in recent years, and put forward the future directions of DBT.
+In Section~\ref{sec:conclusions}, we summarize the content of this survey.

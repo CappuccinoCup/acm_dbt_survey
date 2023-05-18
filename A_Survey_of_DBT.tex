@@ -1,17 +1,17 @@
 %%
-%% This is file `sample-acmsmall-conf.tex',
+%% This is file `sample-acmsmall.tex',
 %% generated with the docstrip utility.
 %%
 %% The original source files were:
 %%
-%% samples.dtx  (with options: `acmsmall-conf')
+%% samples.dtx  (with options: `acmsmall')
 %% 
 %% IMPORTANT NOTICE:
 %% 
 %% For the copyright see the source file.
 %% 
 %% Any modified versions of this file must be renamed
-%% with new filenames distinct from sample-acmsmall-conf.tex.
+%% with new filenames distinct from sample-acmsmall.tex.
 %% 
 %% For distribution of the original source see the terms
 %% for copying and modification in the file samples.dtx.
@@ -49,6 +49,8 @@
 \settopmatter{printccs=false, printacmref=false}
 \renewcommand\footnotetextcopyrightpermission[1]{}
 
+\usepackage{makecell}
+
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -66,18 +68,13 @@
 % \acmDOI{XXXXXXX.XXXXXXX}
 \setcopyright{none}
 
-%% These commands are for a PROCEEDINGS abstract or paper.
-\acmConference[Conference acronym 'XX]{Make sure to enter the correct
-  conference title from your rights confirmation emai}{June 03--05,
-  2018}{Woodstock, NY}
 %%
-%%  Uncomment \acmBooktitle if the title of the proceedings is different
-%%  from ``Proceedings of ...''!
-%%
-%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
-%%  June 03--05, 2018, Woodstock, NY}
-% \acmPrice{15.00}
-% \acmISBN{978-1-4503-XXXX-X/18/06}
+%% These commands are for a JOURNAL article.
+\acmJournal{JACM}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmMonth{1}
 
 %%
 %% Submission ID.
@@ -128,14 +125,33 @@
 %% Of note is the shared affiliation of the first two authors, and the
 %% "authornote" and "authornotemark" commands
 %% used to denote shared contribution to the research.
-\author{Chaoyi Liang}
-\authornote{Both authors contributed equally to this survey.}
-\author{Hanzhang Wang}
-\authornotemark[1]
-\author{Qingcan Kong}
-\authornotemark[1]
 \author{Zixing Bai}
-\authornotemark[1]
+\affiliation{%
+ \institution{Fudan University}
+ \streetaddress{220 Handan Road}
+ \city{Shanghai}
+ \country{China}}
+
+\author{Qingcan Kong}
+\affiliation{%
+ \institution{Fudan University}
+ \streetaddress{220 Handan Road}
+ \city{Shanghai}
+ \country{China}}
+
+\author{Hanzhang Wang}
+\affiliation{%
+ \institution{Fudan University}
+ \streetaddress{220 Handan Road}
+ \city{Shanghai}
+ \country{China}}
+
+\author{Chaoyi Liang}
+\affiliation{%
+ \institution{Fudan University}
+ \streetaddress{220 Handan Road}
+ \city{Shanghai}
+ \country{China}}
 
 % \author{Lars Th{\o}rv{\"a}ld}
 % \affiliation{%
@@ -199,7 +215,7 @@
 %% other information printed in the page headers. This command allows
 %% the author to define a more concise list
 %% of authors' names for this purpose.
-\renewcommand{\shortauthors}{Liang et al.}
+\renewcommand{\shortauthors}{Bai et al.}
 
 %%
 %% The abstract is a short summary of the work to be presented in the

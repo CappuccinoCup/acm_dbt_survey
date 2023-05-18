@@ -1,1 +1,48 @@
 \section{Optimizations of DBT}
+\label{sec:optimizations}
+
+The main optimization goals of DBT focus on improving translation efficiency and translation quality.
+The optimization methods proposed by the researchers can be divided into five optimization categories: parallel optimization, memory optimization, basic block-level optimization, instruction-level optimization, and software-hardware coordination optimization.
+
+\subsection{Parallel Optimization}
+Due to the development of multi-core architectures in recent years, some research content has focused on using the concurrency characteristics of multi-core architectures to improve DBT performance.
+On the one hand, the translation process can be parallelized [61][53]; And the execution process is placed on a different core to accelerate [62][63][64].
+For example, HQEMU[78][79] extends QEMU's translator.
+For a multi-threaded program running on QEMU, HQEMU will first add the program to be optimized into a first-in-first-out optimization queue.
+The corresponding code is translated and optimized, which reduces the translation overhead.
+At the same time, the generated code can also be executed in parallel, which improves the code execution efficiency.
+This method is to accelerate DBT with the help of multi-core features by placing translation threads and execution threads on multiple cores.
+In addition, the researchers also translated multi-threaded programs [65], special register mapping [27] [28] [29], atomic instructions [30] [31], branch instructions [32] [33], floating point The translation and optimization of instructions [34], and the optimization of helper functions [46] are deeply studied.
+
+\subsection{Memory Optimization}
+System-level DBT needs to simulate the entire hardware platform including memory.
+Since memory is one of the main bottlenecks that limit the efficiency of program operation, the translation and optimization of memory has become a major research focus of system-level DBT.
+Memory-related research mainly focuses on the following aspects: translation and optimization of memory instructions [66], research on data alignment issues [67][68], optimization of memory overhead of DBT itself [69], and hardware transaction hardware transactional memory (HTM) virtualization [71], research on memory address mapping [70] [72], etc.
+It is worth mentioning that regarding memory address mapping, since the pure software mapping method is too inefficient, you can introduce a shadow page table and use the host's memory management unit (memory management unit, MMU) [70], or directly design a special Methods such as the MMU [72] for binary translation use hardware to accelerate memory address mapping, or directly map the transactions and operations of the client MMU to the host's memory virtualization mechanism [86].
+
+\subsection{Code Layout Optimization}
+As mentioned above, DBT usually translates in units of basic blocks, but the basic block method has a disadvantage that its granularity is too small to perform some in-depth optimization.
+Therefore, researchers propose that multiple basic blocks can be combined into one translation unit (region) for overall translation and deep optimization.
+One method of constructing a region is to analyze the hot path of program execution by recording the execution information of the program, and then construct all the basic blocks on the hot path into a trace.
+Regarding trace, Duesterwald et al. [51] proposed a hot path prediction method and achieved a good accuracy rate, thus reducing the execution information that needs to be collected; Porto et al. [52] proposed an automaton to optimize trace execution; or the running efficiency can be improved by executing trace in parallel [53].
+In addition, by merging regions that exit early [54], using information such as branch type and control flow analysis [55], using branch history information [56], and inlining technology based on indirect jumps [57] to construct or Optimize the generated trace or region.
+
+The code cache stores translated basic block codes for future reuse.
+According to the principle of locality, code cache also has a certain impact on performance, so there have been some studies on the storage and replacement strategies of basic blocks in code cache[58][59][60].
+It is hoped that by optimizing the structure of the cache Or the arrangement of the code in the cache to improve the execution efficiency of the program.
+
+\subsection{Instruction Level Optimization}
+Due to the rapid development of SIMD extensions of different ISAs in different trends in recent years, such as ARM's NEON, X86's AVX256, AVX512, etc., between different ISAs or even between different versions of the same ISA, SIMD instructions are very different.
+The difference, which makes the translation of SIMD instructions more difficult than ordinary instructions.
+Fu et al. [37] proposed a SIMD dynamic translation framework, applied it to QEMU [1], and obtained a performance improvement of 1.84 to 6.81 times compared with the original.
+There are also researchers who use general-purpose SIMD IR to reduce the difficulty of SIMD conversion [35][36]; or vectorize the old version of the legacy binary program so that it can benefit from the new version of the SIMD extension [38 ]; and the translation of asymmetric SIMD instructions [39] and the translation of fixed-vector-length to indefinite-vector-length SIMD instructions [40] have been studied.
+Another part of the research focuses on SIMD register type mismatch [41], register mapping from ARM to X86 [42][43], translation of non-sequential SIMD memory access instructions and register mapping [44] and other register mapping related issues.
+Wu et al. [45] proposed that SIMD resources can be fully utilized to improve DBT performance, especially SIMD registers can be used to make up for the shortage of host general-purpose registers in the register map.
+
+\subsection{Hardware Accelerate}
+Some researchers hope to design a more efficient DBT tool through the method of software and hardware collaboration.
+In addition to accelerating memory address mapping and assisting in code cache management through hardware mentioned above, hardware features of MIPS, VLIW and other architectures can also be used to reduce translation overhead or speed up the translation process.
+Translating X86 to MIPS XBAR[85] can directly or partially use the host machine's decoder (decoder) to decode, or use the floating-point arithmetic unit and floating-point registers to accelerate the operation of X86 stack floating-point instructions.
+The system-level translation tool [87] studied by Rokicki et al. can translate MIPS instructions to VLIW.
+After generating the IR, the translation tool will analyze the parallelism between instructions and call the scheduler of the VLIW hardware to adjust the order of the translated code, so that instructions that can be parallelized are placed in the same bundle.
+Their subsequent research [88] added three new hardware on the original basis (the client ISA was changed from MIPS to RISC-V), so that the construction of IR, instruction scheduling and code generation were all handed over to specialized hardware to execute.
