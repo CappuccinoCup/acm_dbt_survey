@@ -10,21 +10,21 @@ Dynamic binary translation is almost the only option when emulation of a client 
 
 Simulators also have application-level and system-level distinctions.
 Because the application-level DBT execution efficiency is higher, the application-level simulation is generally preferred for simulators that are compatible with applications of other architectures.
-For example, Apple's Rosetta 2[3] is compatible with X86 applications on the ARM architecture, and its efficiency reaches 70\% to 80\% of bare metal execution.
+For example, Apple's Rosetta 2 is compatible with X86 applications on the ARM architecture, and its efficiency reaches 70\% to 80\% of bare metal execution.
 However, the application-level simulator can only translate the application program, and has no access to the instructions of the kernel, nor the implementation details of the underlying hardware.
 Therefore, those simulators whose main purpose is simulation hope to simulate the entire hardware platform and At the same time, it pays attention to collecting information of user-mode instructions and kernel-mode instructions, so these simulators are mainly system-level.
-QEMU[1], which is familiar in the industry, supports system-level simulation of the entire hardware platform, including CPU, memory, and peripherals.
+QEMU~\cite{DBLP:conf/usenix/Bellard05}, which is familiar in the industry, supports system-level simulation of the entire hardware platform, including CPU, memory, and peripherals.
 
-In addition to QEMU[1], Strata[99], SkyEye[100], which support the translation of multiple ISAs and can run on general platforms, a considerable number of simulators are aimed at specific host platforms developing.
+In addition to QEMU~\cite{DBLP:conf/usenix/Bellard05}, Strata~\cite{DBLP:conf/cgo/ScottKVCDS03}, SkyEye~\cite{DBLP:conf/icppw/YuJHC06}, which support the translation of multiple ISAs and can run on general platforms, a considerable number of simulators are aimed at specific host platforms developing.
 Because these platforms have limited resources or lack of specialized compilers or application developers, DBT is needed to simulate applications on common platforms. Although this type of simulator has lost its versatility, it can obtain good performance with limited hardware resources because it makes full use of the environment and hardware features of the host platform.
-For example, DistriBit [105] is a DBT tool specially designed for distributed platforms.
+For example, DistriBit ~\cite{DBLP:conf/hpdc/GuanYCGLC10} is a DBT tool specially designed for distributed platforms.
 It stores the main translation process and all translated codes on the server side, while the client side only needs to maintain a small code cache and send translation requests to the server.
 In this way, part of the calculation-intensive code or even all the code can be placed on the server, thereby reducing the execution pressure of the mobile client.
-Similar DBT tools developed specifically for distributed platforms include [110], [111] and DQEMU [115].
-On the embedded platform with more limited resources, because of the short clock cycle, small memory and cache capacity, and simple micro-architecture, there are problems in the development of DBT on embedded systems that need to pay attention to memory utilization efficiency, virtual memory, and energy consumption, endianness, and register mapping [109][114].
-Similarly there are simulators developed for specific hardware and platforms such as accumulator architectures [98], SOCS [107], and non-volatile memory [116].
+Similar DBT tools developed specifically for distributed platforms include ~\cite{DBLP:journals/jsa/HsuHHLW15}, ~\cite{DBLP:conf/mobisys/WangYZMWB17} and DQEMU ~\cite{DBLP:conf/icpp/ZhaoJLGWY20}.
+On the embedded platform with more limited resources, because of the short clock cycle, small memory and cache capacity, and simple micro-architecture, there are problems in the development of DBT on embedded systems that need to pay attention to memory utilization efficiency, virtual memory, and energy consumption, endianness, and register mapping ~\cite{DBLP:conf/vee/KondohK10}~\cite{DBLP:conf/icit2/SalgadoGCMT19}.
+Similarly there are simulators developed for specific hardware and platforms such as accumulator architectures ~\cite{DBLP:conf/cgo/KimS03}, SOCS ~\cite{DBLP:journals/corr/abs-0710-4644}, and non-volatile memory ~\cite{DBLP:journals/jss/WuDFZWZ22}.
 
-In addition, cross-ISA simulators can also be compatible with applications on old platforms on new hardware, such as Crusoe[96] that is compatible with X86 on VLIW, IA32-EL[97] that is compatible with IA32 on Itanium, and ARM-V8 HyperMAMBO-X64[103][104] compatible with ARM 32 instructions and Rosetta 2[3] compatible with X86 on ARM, etc.
+In addition, cross-ISA simulators can also be compatible with applications on old platforms on new hardware, such as Crusoe~\cite{dehnert2003transmeta} that is compatible with X86 on VLIW, IA32-EL~\cite{DBLP:conf/micro/BarazDEGSWZ03} that is compatible with IA32 on Itanium, and ARM-V8 HyperMAMBO-X64~\cite{DBLP:conf/vee/DAntrasGGGL17}~\cite{DBLP:conf/pldi/DAntrasGGL17} compatible with ARM 32 instructions and Rosetta 2 compatible with X86 on ARM, etc.
 
 \subsection{Binary Program Analysis}
 Binary program analysis does not depend on source code, so it is more versatile than source code-level program analysis techniques.
@@ -34,12 +34,12 @@ Binary program analysis is divided into static analysis and dynamic analysis.
 Dynamic analysis usually uses binary translation related technologies to collect and analyze program information by inserting new instructions or directly modifying existing code, and even directly control the execution path of the program.
 This application of binary translation is called binary instrumentation.
 Binary instrumentation is also divided into static and dynamic, but whether it is static instrumentation or dynamic instrumentation, instruction information is collected at runtime, so both belong to dynamic program analysis.
-Binary instrumentation can be used for program debugging, such as Valgrind [117] to track program memory leaks through dynamic binary instrumentation.
+Binary instrumentation can be used for program debugging, such as Valgrind ~\cite{DBLP:conf/pldi/NethercoteS07} to track program memory leaks through dynamic binary instrumentation.
 Due to its instruction-level analysis level, binary instrumentation can also be used in the field of computer architecture to simulate new instructions that are not supported by hardware, or to support hardware emulation by collecting instruction information.
-For example, DynamoRio[119] can pass dynamic Binary instrumentation collects executed instruction information and uses it for emulation of hardware such as caches.
+For example, DynamoRio~\cite{DBLP:conf/vee/BrueningZA12} can pass dynamic Binary instrumentation collects executed instruction information and uses it for emulation of hardware such as caches.
 
 The advantage of static binary instrumentation is that it can comprehensively analyze the entire binary program, thus ensuring relatively high coverage.
-CCFIR [121] and binCFI [122] utilize static binary instrumentation to ensure the control flow integrity of COTS programs.
+CCFIR ~\cite{DBLP:conf/sp/ZhangWCDSMSZ13} and binCFI ~\cite{DBLP:conf/acsac/ZhangS15} utilize static binary instrumentation to ensure the control flow integrity of COTS programs.
 Since all analysis and optimization work is completed before running, the only execution overhead introduced by static binary instrumentation is the overhead required to execute instrumentation instructions, which is more efficient than dynamic binary instrumentation.
 However, static binary instrumentation also has disadvantages such as inability to instrument shared libraries, instrumentation instructions interfering with program execution, missing information during program execution, and poor flexibility.
 Therefore, the research on binary instrumentation is mainly based on dynamic binary instrumentation.
@@ -47,35 +47,35 @@ Therefore, the research on binary instrumentation is mainly based on dynamic bin
 Dynamic binary instrumentation does not face code and data obfuscation issues like static instrumentation.
 Decoding and instrumentation following program execution can help instrumentation tools to easily obtain data embedded in the code.
 Dynamic binary instrumentation can also be divided into application level and system level according to whether kernel instructions need to be instrumented.
-Classic application-level instrumentation tools include Pin[118], DynamoRIO[119] and DyInst[120], etc.
+Classic application-level instrumentation tools include Pin~\cite{DBLP:conf/pldi/LukCMPKLWRH05}, DynamoRIO~\cite{DBLP:conf/vee/BrueningZA12} and DyInst~\cite{DBLP:journals/ijhpca/BuckH00}, etc.
 The usual goal of application-level instrumentation tools is to analyze only the instructions of the application itself, and since it does not need to analyze the kernel, its overhead is usually relatively small.
 
 When the instrumentation tool is applied to fields such as simulation or operating system development, it is necessary to perform instrumentation on the kernel code.
 A tool capable of dynamic instrumentation of the kernel needs to simulate the virtual machine environment first, so it is generally implemented based on a system-level simulator.
-The well-known system-level instrumentation tools include DRK[124], DyKa[125], which specialize in kernel analysis, and PEMU[123] based on QEMU[1].
+The well-known system-level instrumentation tools include DRK~\cite{DBLP:conf/asplos/FeinerBG12}, DyKa~\cite{DBLP:conf/icuimc/LeeJKE12}, which specialize in kernel analysis, and PEMU~\cite{DBLP:conf/vee/ZengFL15} based on QEMU~\cite{DBLP:conf/usenix/Bellard05}.
 
 \subsection{Binary Security}
 In recent years, people's attention to security issues has been increasing, and binary analysis technology is especially suitable for security analysis of programs that lack source code.
 Binary translation (instrumentation) technology can be applied to dynamic binary analysis.
 Based on the binary instrumentation technology mentioned above, some binary security analysis technologies will be introduced next.
 The idea of Control-Flow Integrity (CFI) proposed to resist control flow hijacking is usually realized by means of stub insertion technology.
-Chao Zhang and others pointed out that the overhead introduced by CFI stub insertion is too large, so they proposed CFIR[121], which restricts the jump targets of indirect jump and return instructions through static binary stub insertion and the introduction of additional information such as relocation tables, thus ensuring security, and an average of only 3.6\% of the additional performance overhead.
-The binCFI [122] proposed by Mingwei Zhang et al. is also based on static binary instrumentation.
+Chao Zhang and others pointed out that the overhead introduced by CFI stub insertion is too large, so they proposed CFIR~\cite{DBLP:conf/sp/ZhangWCDSMSZ13}, which restricts the jump targets of indirect jump and return instructions through static binary stub insertion and the introduction of additional information such as relocation tables, thus ensuring security, and an average of only 3.6\% of the additional performance overhead.
+The binCFI ~\cite{DBLP:conf/acsac/ZhangS15} proposed by Mingwei Zhang et al. is also based on static binary instrumentation.
 By adding new code segments to save the legal jump target sets of different types of indirect jumps, it can be implemented transparently without changing the original code, and can be applied to COTS programs on a large scale.
 
 Dynamic taint analysis (dynamic taint analysis) can mark the data source of interest and record its propagation path when the program is running, and is mostly used in program security analysis and detection, information flow control, etc.
-Dytan[126], a highly flexible and customizable taint analysis framework, uses Pin for instrumentation, which can simultaneously track the pollution caused by data flow and control flow, and provides a general analysis model.
-Minemu [127] can reduce the overhead of taint propagation analysis on memory operations and reduce the overflow pressure caused by insufficient registers during register allocation by borrowing SSE registers.
-Taintdroid [128] applied to smartphones can simultaneously track multiple sensitive pollution sources and integrate multiple tracking granularities in the process of pollution propagation to improve execution efficiency.
-Straighttaint[129], a static and dynamic taint analysis tool, can compose pollution condition constraints by collecting condition code information, so as to obtain pollution tracking information under a specific set of constraints.
+Dytan~\cite{DBLP:conf/issta/ClauseLO07}, a highly flexible and customizable taint analysis framework, uses Pin for instrumentation, which can simultaneously track the pollution caused by data flow and control flow, and provides a general analysis model.
+Minemu ~\cite{DBLP:conf/raid/BosmanSB11} can reduce the overhead of taint propagation analysis on memory operations and reduce the overflow pressure caused by insufficient registers during register allocation by borrowing SSE registers.
+Taintdroid ~\cite{DBLP:journals/tocs/EnckGHTCCJMS14} applied to smartphones can simultaneously track multiple sensitive pollution sources and integrate multiple tracking granularities in the process of pollution propagation to improve execution efficiency.
+Straighttaint~\cite{DBLP:conf/kbse/MingWWXL16}, a static and dynamic taint analysis tool, can compose pollution condition constraints by collecting condition code information, so as to obtain pollution tracking information under a specific set of constraints.
 
-In malware detection, X-Force [130] detects or recovers anomalies and sets allocated memory locations to avoid program crashes caused by invalid memory access, thereby effectively mining malicious behaviors in programs.
-Bernardi et al. [131] proposed a dynamic malware detection method based on process mining: build the execution sequence of system calls in the application program as the fingerprint of software dynamic behavior characteristics, and classify malware by training a classifier.
-Arora et al. [132] proposed that malware behaviors in Android-based smartphones can be detected by detecting the network traffic characteristics of malicious activities in applications and training a rule-based classifier to classify the network traffic characteristics.
+In malware detection, X-Force ~\cite{DBLP:conf/uss/PengDZXLS14} detects or recovers anomalies and sets allocated memory locations to avoid program crashes caused by invalid memory access, thereby effectively mining malicious behaviors in programs.
+Bernardi et al. ~\cite{DBLP:journals/ijisec/BernardiCDMM19} proposed a dynamic malware detection method based on process mining: build the execution sequence of system calls in the application program as the fingerprint of software dynamic behavior characteristics, and classify malware by training a classifier.
+Arora et al. ~\cite{DBLP:conf/ngmast/AroraGP14} proposed that malware behaviors in Android-based smartphones can be detected by detecting the network traffic characteristics of malicious activities in applications and training a rule-based classifier to classify the network traffic characteristics.
 
 Opaque predicates are widely used in software protection and malware to obfuscate program control flow.
-LOOP [133] can effectively detect and analyze opaque predicates in binary programs by collecting instruction flow information during program execution with dynamic binary instrumentation.
-In the field of cryptographic security, K-Hunt [134] can effectively identify insecure keys in applications with the help of dynamic instrumentation.
+LOOP ~\cite{DBLP:conf/ccs/MingXWW15} can effectively detect and analyze opaque predicates in binary programs by collecting instruction flow information during program execution with dynamic binary instrumentation.
+In the field of cryptographic security, K-Hunt ~\cite{DBLP:conf/ccs/LiLCZG18} can effectively identify insecure keys in applications with the help of dynamic instrumentation.
 
-In terms of kernel code and system-level behavior monitoring, QVMII [135] can monitor system call operations, file operations, process operations, and other behaviors through system-level dynamic binary instrumentation.
-Qelt [136] can perform fine-grained monitoring and analysis on system-level behaviors such as kernel code and library functions.
+In terms of kernel code and system-level behavior monitoring, QVMII ~\cite{DBLP:conf/sigsoft/DovgalyukFVM17} can monitor system call operations, file operations, process operations, and other behaviors through system-level dynamic binary instrumentation.
+Qelt ~\cite{DBLP:conf/vee/CotaC19} can perform fine-grained monitoring and analysis on system-level behaviors such as kernel code and library functions.
