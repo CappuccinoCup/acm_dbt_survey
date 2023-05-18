@@ -1,45 +1,56 @@
 \section{Background}
 \label{sec:background}
 
-Binary translation translates binary programs from one ISA to another without relying on source code. 
-Binary translation can be divided into static binary translation (SBT), dynamic binary translation (DBT) and binary translation combining static and dynamic. 
-These three translation methods will be introduced separately below.
+Binary translation converts binary programs from a guest ISA to a host ISA without relying on source codes.
+The host ISA can be the same with the guest ISA or not.
+Binary translation can be divided into SBT and DBT. 
+These two translation methods will be introduced separately below.
 
 \subsection{Static Binary Translation}
-The process of static binary translation is basically similar to compilation, the difference is that the input file of static binary translation changes from source code to binary program: 
-the input binary program is first parsed through the disassembly process, and then the control flow graph is generated through analysis, and then further analyzed to generate The intermediate representation is then optimized on the intermediate representation, and finally the binary instructions that can be executed on the host machine are generated through the code generation process.
-Since the translation process is performed offline, its execution efficiency is relatively high, and translation can be performed multiple times at a time.
-Static binary translation can be regarded as a compiler that uses binary programs as input, so some people propose that the compiler can be directly transformed into a static binary translation tool ~\cite{Hwang2010DisIRerCA}: 
-just convert binary instructions into intermediate representations, from intermediate representations to The process of the host computer instruction can be completed directly by using the compiler. 
-However, whether it is a compiler or a static binary translator, it is usually optimized on the intermediate representation, so some host information will be lost and optimization opportunities will be missed. 
-Therefore, the research of Tan Jie et al. ~\cite{TanJie2017ISSN} focuses on the optimization of the host. 
+The process of SBT can be divided into several steps.
+First, disassemble the input binary program and generate the control flow graph.
+Second, take a further analysis and generate the intermediate representation.
+Third, do optimizations on the intermediate representation.
+Finally, output the host binary codes that can be executed on the host machine through the code generation process.
+Since the above process is performed offline, its execution efficiency is relatively high, and the translation can be performed only once.
+SBT can be regarded as a compiler that uses binary programs as input.
+Therefore, some researchers propose that a compiler can be directly transformed into a SBT tool ~\cite{Hwang2010DisIRerCA}: just convert guest instructions into intermediate representations; The process of code generation from intermediate representations to host instructions can be completed directly using the compiler. 
+However, whether it is a compiler or a static binary translator, optimizations are usually performed on the intermediate representation, so some host information will be lost and optimization opportunities will be missed. 
+Therefore, the research of Tan Jie et al. ~\cite{TanJie2017ISSN} focuses on the optimization of the host binaries. 
 In terms of code, combined with liveness analysis and peephole optimization theory, a large number of redundant instructions have been successfully eliminated, and the execution efficiency has been improved by a maximum of 42\%.
 
-However, static binary translation cannot well solve the problems faced in indirect jumps, self-modifying code, and dynamic linking.
+However, SBT cannot well solve the problems in indirect jumps, self-modifying code, and dynamic linking.
 
 Indirect jumps are jump instructions that store the jump target in a register instead of an instruction, and these jump targets often have to wait until runtime to determine the specific value.
 Determining the indirect jump targets and their mapping on the host ISA is known as code discovery and code localization problems, respectively. 
 For code discovery and code localization, researchers have proposed some feasible solutions. 
-One solution for code discovery is to establish an address mapping table, store possible jump targets in the table, and insert a mark when translating indirect jump instructions, and when the mark is encountered during execution, it will go to the address mapping table to query the jump Forward address.
+One solution for code discovery is to establish an address mapping table, store possible jump targets in the table, and insert a mark when translating indirect jump instructions.
+When the mark is encountered during execution, it will go to the address mapping table to query the jump forward address.
 Bansal et al. ~\cite{bansal2008binary} use the method of the above address mapping table to determine the indirect jump target.
 Chen Long et al. ~\cite{chenlong2008} proposed a semantic map-based method to identify those indirect jump instructions and confirm their jump targets.
 After confirming the jump target, the customer target address must be converted to the host target address, that is, code positioning.
 Wang Jun et al. \cite{wangjun2019} proposed a solution to establish a secondary mapping table to save the mapping relationship between the client's target address and the host's target address to determine the mapped target address.
 
-However, no effective static solution has been found so far for the problems posed by self-modifying code and dynamic linking.
-Due to the mixed characteristics of data and instructions in the von Neumann architecture, for a memory access instruction, it is difficult for static binary translation to distinguish whether the content accessed by the memory access instruction is an instruction or ordinary data during the offline translation process.
-Therefore, self-modifying code is hardly recognized by static binary translation, and it is even more difficult to process self-modifying code offline.
-However, due to the low proportion of self-modifying codes in common applications, current static binary translation tools tend to avoid them.
-Secondly, static binary translation is also difficult to deal with the problems caused by dynamic link libraries.
-When a dynamic link library version upgrade occurs at runtime, static binary translation can hardly recognize the occurrence of this situation, unless all dynamic link libraries have prepared translated versions in advance, which is related to the dynamic link library Contrary to the design concept.
+However, no effective static solution has been found so far for the problems of self-modifying code and dynamic linking.
+Due to the mixed characteristics of data and instructions in the von Neumann architecture, for a memory access instruction, it is difficult for SBT to distinguish whether the accessed content is an instruction or ordinary data during the offline translation process.
+Therefore, self-modifying code is hardly recognized by SBT, and is even more difficult to process.
+However, due to the low proportion of self-modifying code in common applications, current SBT tools tend to ignore them.
+Besides, it is difficult for SBT to deal with the problems caused by dynamic link libraries.
+When the version of a dynamic link library upgrades at runtime, SBT can hardly recognize this situation, unless all dynamic link libraries have prepared translated versions in advance, which is contrary to the design concept of dynamic link library.
 
 \subsection{Dynamic Binary Translation}
-Dynamic binary translation puts the translation process at runtime and executes it while translating. 
-Although this inevitably brings a lot of translation and optimization overhead at runtime, because of the runtime information, dynamic binary translation can easily solve code discovery and code location problems. 
-As for the problem of self-modifying code, there are two mature solutions for dynamic binary translation ~\cite{probst2002dynamic}: special instructions provided by ISA to notify the processor that self-modifying has occurred; or using page protection mechanism to identify and process self-modifying code. 
+DBT puts the translation process at runtime and executes it while translating. 
+A typical DBT tool is mainly composed of translation engine, execution engine and code cache. 
+The DBT tool takes the binary program file of the guest ISA as input, and typically performs translation in units of basic blocks according to certain rules. 
+If a basic block is executed for the first time, the translation engine first translates it through four steps of parsing, analysis, optimization, and code generation, and then stores the translated code segment in the code cache and sends it to the execution engine for execution. 
+Later, when the basic block is executed again, the execution engine will get the code segment from the code cache and send it directly for execution.
+
+Although DBT brings a lot of translation and optimization overhead at runtime, because of the runtime information, DBT can easily solve code discovery and code location problems. 
+As for the problem of self-modifying code, there are two mature solutions for DBT ~\cite{probst2002dynamic}: special instructions provided by ISA to notify the processor that self-modifying has occurred; or using page protection mechanism to identify and process self-modifying code. 
 QEMU~\cite{DBLP:conf/usenix/Bellard05}, which is well known in the industry, uses a page protection mechanism to solve the problem of self-modifying code.
 
-A typical dynamic binary translation tool is mainly composed of translation engine, execution engine and code cache. 
-The dynamic binary translation tool takes the binary program file of the client computer ISA as input, and performs translation in units of basic blocks according to certain rules. 
-When the basic block is executed for the first time, the translation engine first translates it through four steps of parsing, analysis, optimization, and code generation, and then stores the translated code segment in the code cache and sends it to the execution engine for execution. 
-When the basic block is subsequently executed again, the execution engine will take the code segment out of the code cache and send it directly for execution.
+In summary, although the performance is worse than SBT, DBT can collect detailed program runtime information to solve complex translation problems, which means it has more powerful translation capabilities.
+In addition, DBT can also use simulation to assist translation, e.g., the helper function in QEMU~\cite{DBLP:conf/usenix/Bellard05}.
+Using these methods in combination, DBT can achieve 100\% translation coverage, which is not possible to SBT.
+Therefore, researchers of binary translation are more inclined to study DBT.
+In fact, the research work of DBT is far more than that of SBT, according to our survey.
