@@ -9,10 +9,10 @@ These three translation methods will be introduced separately below.
 The process of static binary translation is basically similar to compilation, the difference is that the input file of static binary translation changes from source code to binary program: 
 the input binary program is first parsed through the disassembly process, and then the control flow graph is generated through analysis, and then further analyzed to generate The intermediate representation is then optimized on the intermediate representation, and finally the binary instructions that can be executed on the host machine are generated through the code generation process.
 Since the translation process is performed offline, its execution efficiency is relatively high, and translation can be performed multiple times at a time.
-Static binary translation can be regarded as a compiler that uses binary programs as input, so some people propose that the compiler can be directly transformed into a static binary translation tool [11]: 
+Static binary translation can be regarded as a compiler that uses binary programs as input, so some people propose that the compiler can be directly transformed into a static binary translation tool ~\cite{Hwang2010DisIRerCA}: 
 just convert binary instructions into intermediate representations, from intermediate representations to The process of the host computer instruction can be completed directly by using the compiler. 
 However, whether it is a compiler or a static binary translator, it is usually optimized on the intermediate representation, so some host information will be lost and optimization opportunities will be missed. 
-Therefore, the research of Tan Jie et al. [12] focuses on the optimization of the host. 
+Therefore, the research of Tan Jie et al. ~\cite{TanJie2017ISSN} focuses on the optimization of the host. 
 In terms of code, combined with liveness analysis and peephole optimization theory, a large number of redundant instructions have been successfully eliminated, and the execution efficiency has been improved by a maximum of 42\%.
 
 However, static binary translation cannot well solve the problems faced in indirect jumps, self-modifying code, and dynamic linking.
@@ -21,10 +21,10 @@ Indirect jumps are jump instructions that store the jump target in a register in
 Determining the indirect jump targets and their mapping on the host ISA is known as code discovery and code localization problems, respectively. 
 For code discovery and code localization, researchers have proposed some feasible solutions. 
 One solution for code discovery is to establish an address mapping table, store possible jump targets in the table, and insert a mark when translating indirect jump instructions, and when the mark is encountered during execution, it will go to the address mapping table to query the jump Forward address.
-Bansal et al. [13] use the method of the above address mapping table to determine the indirect jump target.
-Chen Long et al. [14] proposed a semantic map-based method to identify those indirect jump instructions and confirm their jump targets.
+Bansal et al. ~\cite{bansal2008binary} use the method of the above address mapping table to determine the indirect jump target.
+Chen Long et al. ~\cite{chenlong2008} proposed a semantic map-based method to identify those indirect jump instructions and confirm their jump targets.
 After confirming the jump target, the customer target address must be converted to the host target address, that is, code positioning.
-Wang Jun et al. [15] proposed a solution to establish a secondary mapping table to save the mapping relationship between the client's target address and the host's target address to determine the mapped target address.
+Wang Jun et al. \cite{wangjun2019} proposed a solution to establish a secondary mapping table to save the mapping relationship between the client's target address and the host's target address to determine the mapped target address.
 
 However, no effective static solution has been found so far for the problems posed by self-modifying code and dynamic linking.
 Due to the mixed characteristics of data and instructions in the von Neumann architecture, for a memory access instruction, it is difficult for static binary translation to distinguish whether the content accessed by the memory access instruction is an instruction or ordinary data during the offline translation process.
@@ -36,7 +36,7 @@ When a dynamic link library version upgrade occurs at runtime, static binary tra
 \subsection{Dynamic Binary Translation}
 Dynamic binary translation puts the translation process at runtime and executes it while translating. 
 Although this inevitably brings a lot of translation and optimization overhead at runtime, because of the runtime information, dynamic binary translation can easily solve code discovery and code location problems. 
-As for the problem of self-modifying code, there are two mature solutions for dynamic binary translation [7]: special instructions provided by ISA to notify the processor that self-modifying has occurred; or using page protection mechanism to identify and process self-modifying code. 
+As for the problem of self-modifying code, there are two mature solutions for dynamic binary translation ~\cite{probst2002dynamic}: special instructions provided by ISA to notify the processor that self-modifying has occurred; or using page protection mechanism to identify and process self-modifying code. 
 QEMU~\cite{DBLP:conf/usenix/Bellard05}, which is well known in the industry, uses a page protection mechanism to solve the problem of self-modifying code.
 
 A typical dynamic binary translation tool is mainly composed of translation engine, execution engine and code cache. 
