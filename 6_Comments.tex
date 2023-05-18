@@ -1,2 +1,41 @@
 \section{Challenges and Future Directions}
 \label{sec:comments}
+
+In recent years, commercial dynamic binary translators have been able to match the performance of host computers, such as Apple's Rosetta 2 for running x86 programs on M-series chips, and Netease's MuMu simulator for running ARM mobile games on x86 PCs, etc.
+At the same time, many of the latest studies in academic tend to use some architecture-specific properties and hardware features to improve the performance of DBT.
+Although the above phenomenons mean that DBT has actually matured, there are also problems lie in modern DBT technology:
+
+1. Commercial products lack scalability and compatibility.
+Due to the relatively fixed application scenarios and emphasis on the performance of commercial dynamic binary translators, developers often build them in a way that lacks scalability, such as relying on architecture-specific features or underlying hardware.
+However, the development cycle of dynamic binary translators is generally long, and the lack of scalability will lead to a lot of waste of manpower and material resources.
+When a new architecture needs to be supported, it is likely to need to re-develop a new dynamic binary translator.
+
+2. Universal dynamic binary translators have poor performance.
+The more general the dynamic binary translator is, the more difficult it is to enjoy the speed-up brought by the architecture and hardware features of the host machine.
+A typical multi-architecture dynamic binary translator QEMU running ARM guest binary programs on an x86 host machine has more than 10 times the slowdown on average compared to directly executing binary programs on an ARM host machine.
+
+3. The latest research in academia is difficult to realize in the commercial field.
+The academic research on dynamic binary translation is dominated by QEMU because it provides a dynamic binary translator architecture with high scalability and multi-architecture support.
+Researchers can easily modify and verify their ideas on QEMU.
+However, the scalability and versatility of QEMU also cause it to have serious performance problems, which makes it difficult to promote the latest research in academia to the industry.
+
+Researchers have also been aware of the above problems and made efforts, but these problems are still not resolved.
+For example, Captive is a system-level DBT hypervisor developed with the goal of high scalability and high performance.
+It provides a set of instruction set architecture description language defined by itself and uses automatic generation to realize the extension of new ISAs.
+However, this instruction set architecture description language still faces the problems of scalability, comprehensiveness, and inconvenience to use.
+The Rule-based DBT proposed by Wang et al. and subsequent works is dedicated to using automatically generated translation rules with optimized knowledge for DBT to achieve scalability and high performance, but its coverage cannot reach 100\%.
+That means it still needs a full (human-developed) dynamic binary translator to help it handle scenarios that it can't do by itself.
+Therefore, how to improve the scalability, translation code quality, and execution efficiency of the dynamic binary translator is still challenges and development directions in the future.
+
+However, there is a trade-off between the scalability and performance of dynamic binary translators.
+In a sense, if we want to improve performance, we will inevitably lose scalability.
+At present, QEMU is already a very mature multi-architecture dynamic binary translator, which has basically solved the scalability problem.
+However, the performance of the dynamic binary translator is a constant improvement problem - after all, there is no reason to refuse to "make it faster".
+Therefore, we believe that the performance improvement of DBT is still the main development direction in the future.
+And the trend of implementation is to build a dynamic binary translator more "specific" to take full advantage of the benefits of the underlying architecture.
+
+However, regardless of the optimization assisted by architecture-specific features and hardware, we believe that the performance of DBT still has room for performance improvement in terms of methodology.
+If we look back at the original bifurcation of binary translation - at the beginning we chose the latter in SBT and DBT for more powerful translation capabilities, although the latter is less pleasing in terms of performance than the former.
+Now, we can try to combine the method of SBT with DBT.
+For instructions that can be processed by SBT, SBT is used for translation; for instructions that cannot, DBT is used to handle.
+In this way, DBT can also have the high code quality of SBT and the advantage of "one translation, multiple executions", thus greatly improving the performance of binary translation.
